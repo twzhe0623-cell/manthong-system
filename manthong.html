@@ -59,9 +59,10 @@
         function filterBranchCars() {
             const q = document.getElementById('search-input').value;
             const s = document.getElementById('status-filter').value;
-            dataManager.renderInventory('inventory-list', 'manthong');
+            dataManager.renderInventory('inventory-list', 'manthong', q, s);
         }
     </script>
 </body>
 
 </html>
+
