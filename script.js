@@ -1,6 +1,6 @@
 // 1. 云端同步配置
 const CLOUD_CONFIG = {
-    TOKEN: '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', // 这里后面只要有一个逗号就好
+    TOKEN: localStorage.getItem('MY_GH_TOKEN') || '', 
     OWNER: 'twzhe0623-cell',
     REPO: 'manthong-system',
     FILE: 'data.json'
@@ -161,3 +161,4 @@ const dataManager = {
 // 页面加载时自动从云端拉取
 
 dataManager.fetchCloudData();
+
