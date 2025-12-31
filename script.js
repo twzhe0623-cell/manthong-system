@@ -1,9 +1,9 @@
 // 1. 云端同步配置
 const CLOUD_CONFIG = {
-    TOKEN: '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', 
+    TOKEN: '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', // 这里后面只要有一个逗号就好
     OWNER: 'twzhe0623-cell',
-    REPO: 'manthong-system', // 仓库名建议使用连字符，如果GitHub上是空格请确保一致
-    FILE: 'data.json'        // 建议在仓库新建一个 data.json
+    REPO: 'manthong-system',
+    FILE: 'data.json'
 };
 
 const CONFIG = {
@@ -159,4 +159,5 @@ const dataManager = {
 };
 
 // 页面加载时自动从云端拉取
+
 dataManager.fetchCloudData();
