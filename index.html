@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manthong Group | Internal System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hero-section {
+            height: 70vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            color: white;
+            border-radius: 0 0 50px 50px;
+        }
+        .branch-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .branch-card:hover {
+            transform: scale(1.05);
+            background: var(--primary-color) !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🚗 MANTHONG GROUP</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+    <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+    <li class="nav-item ms-lg-3">
+        <a class="btn btn-warning btn-sm text-dark fw-bold px-3" href="login.html">
+            <i class="bi bi-person-badge"></i> System Management
+        </a>
+    </li>
+</ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-3">ManThong Group System</h1>
+            <p class="lead mb-4">Empowering our branches with real-time stock management.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#branches" class="btn btn-primary btn-lg px-4 rounded-pill">View Branches</a>
+                <a href="calculator.html" class="btn btn-outline-light btn-lg px-4 rounded-pill">Loan Calculator</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mt-n5" style="margin-top: -50px;">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <h2 class="fw-bold text-primary" id="stat-total">0</h2>
+                    <p class="text-muted mb-0">Total Live Stock</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <h2 class="fw-bold text-success" id="stat-available">0</h2>
+                    <p class="text-muted mb-0">Units Available</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <h2 class="fw-bold text-warning" id="stat-last-update">--</h2>
+                    <p class="text-muted mb-0">Latest Update</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container my-5" id="branches">
+        <h3 class="fw-bold mb-4 text-center">Select Branch</h3>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <a href="manthong.html" class="text-decoration-none text-dark">
+                    <div class="glass-card p-5 branch-card">
+                        <i class="bi bi-building display-4 mb-3"></i>
+                        <h4>ManThong Auto Trading</h4>
+                        <p class="small text-muted">Our HQ here</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="everforward.html" class="text-decoration-none text-dark">
+                    <div class="glass-card p-5 branch-card">
+                        <i class="bi bi-shop display-4 mb-3"></i>
+                        <h4>Ever Forward Auto Trading</h4>
+                        <p class="small text-muted">Got 1 Lengzai Boss</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="tscar.html" class="text-decoration-none text-dark">
+                    <div class="glass-card p-5 branch-card">
+                        <i class="bi bi-geo-alt display-4 mb-3"></i>
+                        <h4>Ts Car Sdn. Bhd.</h4>
+                        <p class="small text-muted">SpanCo On Sales</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. 初始化统计数据
+            const cars = dataManager.getCars();
+            document.getElementById('stat-total').innerText = cars.length;
+            document.getElementById('stat-available').innerText = cars.filter(c => c.status === 'available').length;
+            document.getElementById('stat-last-update').innerText = new Date().toLocaleDateString('en-MY');
+
+            // 2. 权限检测：如果是管理员，显示后台入口
+            if (dataManager.isAdmin()) {
+                document.getElementById('admin-link').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

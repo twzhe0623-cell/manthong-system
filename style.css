@@ -1,0 +1,131 @@
+/* ============================================
+   Manthong Group - Global Premium Style (v2.0)
+   ============================================ */
+
+:root {
+    --primary: #1a237e;      /* 深邃蓝 - 展现专业感 */
+    --accent: #fbc02d;       /* 活力金 - 用于重要按钮 */
+    --success: #2e7d32;      /* 森林绿 - 用于 Available 状态 */
+    --danger: #c62828;       /* 警示红 - 用于 Sold 状态 */
+    --glass: rgba(255, 255, 255, 0.85);
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --radius: 16px;
+}
+
+/* 全局重置 */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f0f2f5;
+    color: #1a1a1a;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* 统一背景遮罩：让背景图更暗，文字更亮 */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(240,242,245,0.4) 100%);
+    z-index: -1;
+}
+
+/* 高级毛玻璃卡片核心类 */
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+}
+
+/* 导航栏美化 */
+.navbar {
+    background: rgba(26, 35, 126, 0.9) !important;
+    backdrop-filter: blur(15px);
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.navbar-brand {
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--accent) !important;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: rgba(255,255,255,0.85) !important;
+    margin-left: 15px;
+    transition: 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--accent) !important;
+}
+
+/* 按钮统一美化 */
+.btn {
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #283593;
+    transform: scale(1.02);
+}
+
+.btn-warning {
+    background-color: var(--accent);
+    color: var(--primary);
+    border: none;
+}
+
+/* 车辆列表图片效果 */
+.car-card img {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* 表单控件美化 */
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.9);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.15);
+    border-color: var(--primary);
+}
+
+/* 自定义通知动画 */
+.notification-toast {
+    animation: slideInLeft 0.5s ease forwards;
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* 手机端适配优化 */
+@media (max-width: 768px) {
+    body { padding-top: 60px; }
+    .glass-card { margin-bottom: 20px; }
+    h1 { font-size: 1.8rem; }
+}
