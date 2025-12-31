@@ -5,37 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Everforward | Inventory</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <style>
         body { background: url('https://i.postimg.cc/8cBhtvkJ/IMG-6593.jpg') no-repeat center center fixed; background-size: cover; }
-        .branch-header { padding: 80px 0 40px; background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.3)); color: white; }
+        .branch-header { padding: 80px 0 40px; background: rgba(0,0,0,0.6); color: white; text-align: center; margin-top: 50px; }
+        .glass-card { background: rgba(255,255,255,0.9); border-radius: 15px; padding: 20px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.html">🚗 MANTHONG GROUP</a>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="manthong.html">ManThong</a></li>
-                    <li class="nav-item"><a class="nav-link active fw-bold text-warning" href="everforward.html">EverForward</a></li>
-                    <li class="nav-item"><a class="nav-link" href="tscar.html">TsCar</a></li>
-                </ul>
-            </div>
         </div>
     </nav>
 
-    <header class="branch-header text-center mt-5">
-        <h1 class="display-4 fw-bold">EVERFORWARD</h1>
-        <p class="lead">Premium Selected Inventory</p>
+    <header class="branch-header">
+        <h1 class="display-4 fw-bold">EVERFORWARD AUTO</h1>
+        <p class="lead">Premium Selection</p>
     </header>
 
     <div class="container mt-4">
-        <div class="glass-card p-3 mb-5">
+        <div class="glass-card">
             <div class="row g-2">
-                <div class="col-md-8"><input type="text" id="search-input" class="form-control" placeholder="Search Everforward stock..." oninput="filterBranchCars()"></div>
+                <div class="col-md-8"><input type="text" id="search-input" class="form-control" placeholder="Search Everforward stock..." oninput="filterCars()"></div>
                 <div class="col-md-4">
-                    <select id="status-filter" class="form-select" onchange="filterBranchCars()">
+                    <select id="status-filter" class="form-select" onchange="filterCars()">
                         <option value="all">All Status</option>
                         <option value="ready">Ready Stock</option>
                         <option value="preparing">Preparing</option>
@@ -49,13 +42,20 @@
 
     <script src="script.js"></script>
     <script>
-        const CURRENT_BRANCH = 'everforward'; // 锁定分行
-        document.addEventListener('DOMContentLoaded', () => dataManager.fetchCloudData());
-        
-        function filterBranchCars() {
+        const MY_BRANCH = 'everforward'; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof dataManager !== 'undefined') {
+                dataManager.fetchCloudData().then(() => {
+                    dataManager.renderInventory('inventory-list', MY_BRANCH);
+                });
+            }
+        });
+
+        function filterCars() {
             const q = document.getElementById('search-input').value;
             const s = document.getElementById('status-filter').value;
-            dataManager.renderInventory('inventory-list', CURRENT_BRANCH, q, s);
+            dataManager.renderInventory('inventory-list', MY_BRANCH, q, s);
         }
     </script>
 </body>
