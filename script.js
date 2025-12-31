@@ -17,23 +17,23 @@ const CONFIG = {
 
 const dataManager = {
     // 【云端下载】打开网页自动执行
-    async fetchCloudData() {
-        const url = `https://api.github.com/repos/${CLOUD_CONFIG.OWNER}/${CLOUD_CONFIG.REPO}/contents/${CLOUD_CONFIG.FILE}`;
-        try {
-            const resp = await fetch(url, {
-                headers: { 'Authorization': `token ${CLOUD_CONFIG.TOKEN}` }
-            });
-            if (!resp.ok) return;
-            const data = await resp.json();
-            // 解码 GitHub 的 Base64 文字内容
-            const cars = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-            localStorage.setItem(CONFIG.STORAGE_KEYS.CARS, JSON.stringify(cars));
-            console.log("✅ Cloud data loaded!");
-            // 重新渲染当前页面的列表
-            if (document.getElementById('inventory-list')) this.renderInventory('inventory-list');
-            if (document.getElementById('admin-inventory-list')) this.renderInventory('admin-inventory-list');
-        } catch (e) { console.error("Cloud fetch failed:", e); }
-    },
+async fetchCloudData() {
+    // ... 前面的 fetch 代码保持不变 ...
+    const cars = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+    localStorage.setItem(CONFIG.STORAGE_KEYS.CARS, JSON.stringify(cars));
+    
+    // ⭐ 自动识别当前网页文件名并过滤
+    const path = window.location.pathname;
+    let branch = 'all';
+    if (path.includes('manthong')) branch = 'manthong';
+    else if (path.includes('everforward')) branch = 'everforward';
+    else if (path.includes('tscar')) branch = 'tscar';
+
+    // 渲染
+    if (document.getElementById('inventory-list')) {
+        this.renderInventory('inventory-list', branch);
+    }
+}
 
     // 【云端上传】保存或删除时自动执行
     async pushToCloud(cars) {
@@ -161,4 +161,5 @@ const dataManager = {
 // 页面加载时自动从云端拉取
 
 dataManager.fetchCloudData();
+
 
