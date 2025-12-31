@@ -60,9 +60,10 @@
         function filterBranchCars() {
             const q = document.getElementById('search-input').value;
             const s = document.getElementById('status-filter').value;
-            dataManager.renderInventory('inventory-list', 'everforward');
+            dataManager.renderInventory('inventory-list', 'everforward' q, s);
         }
     </script>
 </body>
 
 </html>
+
