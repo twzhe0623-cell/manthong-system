@@ -33,6 +33,12 @@
         .branch-card:hover .text-muted {
             color: rgba(255,255,255,0.8) !important;
         }
+        .stat-card {
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -68,19 +74,19 @@
 <div class="container mt-n5" style="margin-top: -50px;">
     <div class="row g-3">
         <div class="col-md-4">
-            <div class="glass-card p-4 text-center shadow">
-                <h2 class="fw-bold text-primary" id="stat-total">0</h2>
+            <div class="glass-card stat-card p-4 text-center shadow">
+                <h2 class="fw-bold text-primary" id="stat-total">...</h2>
                 <p class="text-muted mb-0">Total Live Stock</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="glass-card p-4 text-center shadow">
-                <h2 class="fw-bold text-success" id="stat-available">0</h2>
+            <div class="glass-card stat-card p-4 text-center shadow">
+                <h2 class="fw-bold text-success" id="stat-available">...</h2>
                 <p class="text-muted mb-0">Units Available</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="glass-card p-4 text-center shadow">
+            <div class="glass-card stat-card p-4 text-center shadow">
                 <h2 class="fw-bold text-warning" id="stat-last-update">--</h2>
                 <p class="text-muted mb-0">Latest Update</p>
             </div>
@@ -124,21 +130,44 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="script.js"></script>
 <script>
-    // 等待云端数据下载完成后，再更新统计数字
-    document.addEventListener('DOMContentLoaded', async () => {
-        // 执行云端同步
+    /**
+     * 首页初始化逻辑
+     * 1. 调用 script.js 里的数据下载功能
+     * 2. 计算总库存并显示
+     */
+    async function initDashboard() {
+        // 确保 script.js 已加载且 dataManager 可用
         if (typeof dataManager !== 'undefined') {
-            await dataManager.fetchCloudData();
-            
-            // 同步完成后获取最新的数据
-            const cars = dataManager.getCars();
-            
-            // 更新首页统计
-            document.getElementById('stat-total').innerText = cars.length;
-            document.getElementById('stat-available').innerText = cars.filter(c => c.status === 'ready').length;
-            document.getElementById('stat-last-update').innerText = new Date().toLocaleDateString('en-MY');
+            try {
+                // 1. 从云端获取最新数据
+                const cars = await dataManager.fetchCloudData();
+                
+                // 2. 检查是否有数据
+                if (cars && Array.isArray(cars)) {
+                    // 更新总数
+                    document.getElementById('stat-total').innerText = cars.length;
+                    
+                    // 过滤可用状态 (ready 或 available)
+                    const availableCount = cars.filter(c => 
+                        c.status === 'ready' || c.status === 'available'
+                    ).length;
+                    document.getElementById('stat-available').innerText = availableCount;
+                    
+                    // 设置最后更新日期
+                    document.getElementById('stat-last-update').innerText = new Date().toLocaleDateString('en-MY');
+                } else {
+                    // 如果没拿到数据，显示 0
+                    document.getElementById('stat-total').innerText = "0";
+                    document.getElementById('stat-available').innerText = "0";
+                }
+            } catch (err) {
+                console.error("Dashboard init failed:", err);
+            }
         }
-    });
+    }
+
+    // 执行初始化
+    initDashboard();
 </script>
 
 </body>
