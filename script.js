@@ -16,30 +16,44 @@ const CONFIG = {
 };
 
 const dataManager = {
-    // 【云端下载】打开网页自动执行
-async fetchCloudData() {
-    // ... 前面的 fetch 代码保持不变 ...
-    const cars = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-    localStorage.setItem(CONFIG.STORAGE_KEYS.CARS, JSON.stringify(cars));
-    
-    // ⭐ 自动识别当前网页文件名并过滤
-    const path = window.location.pathname;
-    let branch = 'all';
-    if (path.includes('manthong')) branch = 'manthong';
-    else if (path.includes('everforward')) branch = 'everforward';
-    else if (path.includes('tscar')) branch = 'tscar';
+    // 【云端下载】
+    async fetchCloudData() {
+        const url = `https://api.github.com/repos/${CLOUD_CONFIG.OWNER}/${CLOUD_CONFIG.REPO}/contents/${CLOUD_CONFIG.FILE}`;
+        try {
+            const resp = await fetch(url, {
+                headers: { 'Authorization': `token ${CLOUD_CONFIG.TOKEN}` }
+            });
+            if (!resp.ok) return;
+            const data = await resp.json();
+            
+            // 解码 GitHub 的 Base64 文字内容
+            const cars = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            localStorage.setItem(CONFIG.STORAGE_KEYS.CARS, JSON.stringify(cars));
+            console.log("✅ Cloud data loaded!");
 
-    // 渲染
-    if (document.getElementById('inventory-list')) {
-        this.renderInventory('inventory-list', branch);
-    }
-}
+            // ⭐ 自动识别当前网页文件名并过滤分行
+            const path = window.location.pathname;
+            let branch = 'all';
+            if (path.includes('manthong')) branch = 'manthong';
+            else if (path.includes('everforward')) branch = 'everforward';
+            else if (path.includes('tscar')) branch = 'tscar';
 
-    // 【云端上传】保存或删除时自动执行
+            // 重新渲染页面列表
+            if (document.getElementById('inventory-list')) {
+                this.renderInventory('inventory-list', branch);
+            }
+            if (document.getElementById('admin-inventory-list')) {
+                this.renderInventory('admin-inventory-list', 'all');
+            }
+        } catch (e) { 
+            console.error("Cloud fetch failed:", e); 
+        }
+    },
+
+    // 【云端上传】
     async pushToCloud(cars) {
         const url = `https://api.github.com/repos/${CLOUD_CONFIG.OWNER}/${CLOUD_CONFIG.REPO}/contents/${CLOUD_CONFIG.FILE}`;
         try {
-            // 获取文件的 SHA 标识（更新文件必须）
             const getFile = await fetch(url, { headers: { 'Authorization': `token ${CLOUD_CONFIG.TOKEN}` } });
             let sha = "";
             if (getFile.ok) {
@@ -69,7 +83,7 @@ async fetchCloudData() {
     
     saveCars(cars) {
         localStorage.setItem(CONFIG.STORAGE_KEYS.CARS, JSON.stringify(cars));
-        this.pushToCloud(cars); // 自动同步到云端
+        this.pushToCloud(cars); 
     },
 
     moveToRecycle(index) {
@@ -158,8 +172,5 @@ async fetchCloudData() {
     }
 };
 
-// 页面加载时自动从云端拉取
-
+// 页面加载启动
 dataManager.fetchCloudData();
-
-
