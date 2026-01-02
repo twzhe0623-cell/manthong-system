@@ -2,113 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | Manthong Group</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .login-page {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-        }
-        .login-card {
-            max-width: 400px;
-            width: 90%;
-            border-radius: 20px;
-        }
-        .error-shake {
-            animation: shake 0.4s;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-    </style>
 </head>
-<body class="login-page">
-
-    <div class="glass-card login-card p-4 p-md-5 text-center">
-        <div class="mb-4">
-            <i class="bi bi-shield-lock-fill text-primary display-4"></i>
-            <h2 class="fw-bold mt-3">Executive Login</h2>
-            <p class="text-muted small">Please enter your admin credentials</p>
-        </div>
-
-        <form id="login-form">
-            <div class="mb-3 text-start">
-                <label class="form-label small fw-bold">Only Zay pick the person who can in</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-key"></i></span>
-                    <input type="password" id="password" class="form-control border-start-0" placeholder="••••••••" required>
+<body class="bg-dark d-flex align-items-center" style="height: 100vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center" style="background: white;">
+                    <h3 class="fw-bold mb-4">System Login</h3>
+                    <input type="text" id="user" class="form-control mb-3" placeholder="Username">
+                    <input type="password" id="pass" class="form-control mb-4" placeholder="Password">
+                    <button onclick="doLogin()" class="btn btn-primary w-100 rounded-pill">Login</button>
+                    <a href="index.html" class="d-block mt-3 text-muted small text-decoration-none">Back to Website</a>
                 </div>
             </div>
-
-            <div id="error-msg" class="text-danger small mb-3 d-none">
-                <i class="bi bi-exclamation-circle"></i> Invalid password, please try again.
-            </div>
-
-            <button type="submit" id="login-btn" class="btn btn-primary w-100 py-2 fw-bold">
-                Access Dashboard
-            </button>
-        </form>
-
-        <div class="mt-4">
-            <a href="index.html" class="text-decoration-none small text-muted">
-                <i class="bi bi-arrow-left"></i> Back to Public Site
-            </a>
         </div>
     </div>
-
     <script src="script.js"></script>
     <script>
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const pass = document.getElementById('password').value;
-            const btn = document.getElementById('login-btn');
-            const error = document.getElementById('error-msg');
-            const card = document.querySelector('.login-card');
-
-            // 验证逻辑 (对应 script.js 中的配置)
-            if (pass === CONFIG.ADMIN.PASS) {
-                // 登录成功：保存 Session
-                const sessionData = {
-                    isLoggedIn: true,
-                    username: CONFIG.ADMIN.USER,
-                    expiryTime: Date.now() + CONFIG.ADMIN.DURATION
-                };
-                localStorage.setItem(CONFIG.STORAGE_KEYS.ADMIN_SESSION, JSON.stringify(sessionData));
-
-                // 按钮变绿并跳转
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
-                btn.classList.replace('btn-primary', 'btn-success');
-                
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1000);
-
-            } else {
-                // 登录失败：震动效果
-                error.classList.remove('d-none');
-                card.classList.add('error-shake');
-                document.getElementById('password').value = '';
-                
-                setTimeout(() => {
-                    card.classList.remove('error-shake');
-                }, 500);
-            }
-        });
-
-        // 如果已经登录了，直接去后台
-        document.addEventListener('DOMContentLoaded', () => {
-            if (dataManager.isAdmin()) {
+        function doLogin() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if (u === CONFIG.ADMIN.USER && p === CONFIG.ADMIN.PASS) {
+                localStorage.setItem(CONFIG.STORAGE_KEYS.ADMIN_SESSION, JSON.stringify({
+                    isLoggedIn: true, expiryTime: Date.now() + CONFIG.ADMIN.DURATION
+                }));
                 window.location.href = 'admin.html';
-            }
-        });
+            } else { alert("Unauthorized!"); }
+        }
     </script>
 </body>
 </html>
