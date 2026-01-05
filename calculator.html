@@ -1,179 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Calculator | Manthong Group</title>
+    <meta charset="UTF-8"><title>Car Loan Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            background: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
-            background-size: cover;
-        }
-        .calc-container { max-width: 900px; margin-top: 80px; }
-        .result-box {
-            background: var(--primary-color, #1a237e);
-            color: white;
-            border-radius: 0 15px 15px 0;
-            padding: 40px;
-        }
-        @media (max-width: 768px) {
-            .result-box { border-radius: 0 0 15px 15px; }
-        }
-        .monthly-installment { font-size: 3rem; font-weight: 800; color: #fbc02d; }
+        /* 让滑动条看起来更高级一点 */
+        .form-range::-webkit-slider-thumb { background: var(--gold); }
+        .form-range::-moz-range-thumb { background: var(--gold); }
     </style>
 </head>
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="index.html">🚗 MANTHONG GROUP</a>
-            <div class="ms-auto">
-                <a href="index.html" class="btn btn-outline-light btn-sm me-2">Home</a>
-                <a href="login.html" class="btn btn-warning btn-sm fw-bold">System Management</a>
-            </div>
-        </div>
+    <div class="bg-vibe"></div>
+    <nav class="super-nav">
+        <a href="index.html" class="nav-brand">CALCULATOR</a>
+        <div class="nav-links"><a href="index.html">HOME</a></div>
     </nav>
 
-    <div class="container calc-container">
-        <div class="glass-card p-0 overflow-hidden">
-            <div class="row g-0">
-                <div class="col-md-7 p-4 p-lg-5 bg-white">
-                    <h2 class="fw-bold mb-4 text-dark">Loan Calculator</h2>
-                    <form id="loan-form">
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-muted small">CAR PRICE (RM)</label>
-                            <input type="number" id="car-price" class="form-control form-control-lg border-primary" placeholder="e.g. 85000" oninput="syncDP('range')">
-                        </div>
+    <div class="container" style="padding-top: 130px; max-width: 500px;">
+        <div class="morph-card">
+            <h2 class="fw-900 mb-4 text-center">LOAN CALCULATOR</h2>
+            
+            <div class="mb-3">
+                <label>Car Price (RM)</label>
+                <input type="number" id="price" class="form-control" placeholder="RM0.00" oninput="syncFromPercent()">
+            </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-muted small">DOWN PAYMENT</label>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text bg-light">RM</span>
-                                <input type="number" id="dp-cash" class="form-control form-control-lg" placeholder="Enter Amount" oninput="syncDP('cash')">
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <input type="range" class="form-range" id="dp-range" min="0" max="50" step="5" value="10" oninput="syncDP('range')">
-                                <span id="dp-label" class="badge bg-primary p-2">10%</span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label fw-bold text-muted small">PERIOD (YEARS)</label>
-                                <select id="loan-years" class="form-select form-select-lg" onchange="updateCalculation()">
-                                    <option value="3">3 Years</option>
-                                    <option value="4">4 Years</option>
-                                    <option value="5">5 Years</option>
-                                    <option value="6">6 Years</option>
-                                    <option value="7">7 Years</option>
-                                    <option value="8">8 Years</option>
-                                    <option value="9" selected>9 Years</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label fw-bold text-muted small">INTEREST RATE (%)</label>
-                                <input type="number" id="interest-rate" class="form-control form-control-lg" value="3.8" step="0.1" oninput="updateCalculation()">
-                            </div>
-                        </div>
-                    </form>
+            <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                    <label>Down Payment (RM)</label>
+                    <span id="percent-display" class="fw-bold text-warning">10%</span>
                 </div>
+                <input type="number" id="downpayment" class="form-control" placeholder="RM0.00" oninput="syncFromRM()">
+                <input type="range" id="percent-range" class="form-range mt-2" min="0" max="100" step="1" value="10" oninput="syncFromPercent()">
+            </div>
 
-                <div class="col-md-5 result-box d-flex flex-column justify-content-center text-center text-white">
-                    <h5 class="text-white-50 text-uppercase tracking-widest small">Estimated Monthly</h5>
-                    <div class="monthly-installment" id="monthly-payment">RM 0.00</div>
-                    <hr class="my-4 opacity-25">
-                    <div class="text-start px-3 mb-4">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-white-50">Down Payment:</span>
-                            <span id="res-dp" class="fw-bold text-white">RM 0</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-white-50">Total Loan:</span>
-                            <span id="res-loan" class="fw-bold text-white">RM 0</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-warning btn-lg fw-bold shadow-sm" onclick="copyQuote()">
-                        <i class="bi bi-whatsapp"></i> Copy Quote
-                    </button>
-                    <p class="small text-white-50 mt-3">*Calculation for reference only</p>
-                </div>
+            <div class="mb-3">
+                <label>Interest Rate (%)</label>
+                <input type="number" step="0.01" id="interest" class="form-control" placeholder="3.8">
+            </div>
+
+            <div class="mb-3">
+                <label>Period (Years)</label>
+                <select id="years" class="form-select">
+                    <option value="1">1 Years</option>
+                    <option value="2">2 Years</option>
+                    <option value="3">3 Years</option>
+                    <option value="4">4 Years</option>
+                    <option value="5">5 Years</option>
+                    <option value="6">6 Years</option>
+                    <option value="7">7 Years</option>
+                    <option value="8">8 Years</option>
+                    <option value="9" selected>9 Years</option>
+                </select>
+            </div>
+
+            <button onclick="calculate()" class="btn-glow w-100 mt-3">CALCULATE NOW</button>
+
+            <div id="result" class="mt-4 p-3 rounded-4 bg-white bg-opacity-50 text-center d-none">
+                <p class="text-muted mb-1">Monthly Installment</p>
+                <h2 class="fw-900 text-warning" id="monthly">RM 0.00</h2>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 自动从 URL 获取价格
-            const params = new URLSearchParams(window.location.search);
-            if (params.has('price')) {
-                document.getElementById('car-price').value = params.get('price');
-                syncDP('range'); // 初始化计算
-            }
-            updateCalculation();
-        });
-
-        // 同步头期金额与百分比
-        function syncDP(type) {
-            const price = parseFloat(document.getElementById('car-price').value) || 0;
-            const dpCashInput = document.getElementById('dp-cash');
-            const dpRangeInput = document.getElementById('dp-range');
-            const dpLabel = document.getElementById('dp-label');
-
-            if (type === 'range') {
-                const percent = dpRangeInput.value;
-                dpCashInput.value = price > 0 ? (price * (percent / 100)).toFixed(0) : "";
-                dpLabel.innerText = percent + "%";
-            } else if (type === 'cash') {
-                if (price > 0) {
-                    const cash = dpCashInput.value || 0;
-                    const percent = Math.round((cash / price) * 100);
-                    dpRangeInput.value = percent > 50 ? 50 : percent; // 最高限额显示
-                    dpLabel.innerText = (percent > 100 ? 100 : percent) + "%";
-                }
-            }
-            updateCalculation();
+        // 自动从 URL 获取价格
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('price')) {
+            document.getElementById('price').value = urlParams.get('price');
+            // 获取到价格后，初始化头期金额（默认10%）
+            syncFromPercent();
         }
 
-        // 核心计算逻辑
-        function updateCalculation() {
-            const price = parseFloat(document.getElementById('car-price').value) || 0;
-            const dpAmount = parseFloat(document.getElementById('dp-cash').value) || 0;
-            const years = parseInt(document.getElementById('loan-years').value);
-            const interest = parseFloat(document.getElementById('interest-rate').value) / 100;
-
-            const loanAmount = price - dpAmount;
+        // 情况 A: 当滑动百分比，或者修改车价时 -> 自动算 RM
+        function syncFromPercent() {
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const percent = document.getElementById('percent-range').value;
             
-            // 马来西亚车贷算法 (Fixed Rate)
-            const totalInterest = loanAmount * interest * years;
-            const monthly = loanAmount > 0 ? (loanAmount + totalInterest) / (years * 12) : 0;
-
-            // 更新显示
-            document.getElementById('res-dp').innerText = 'RM ' + dpAmount.toLocaleString();
-            document.getElementById('res-loan').innerText = 'RM ' + (loanAmount > 0 ? loanAmount.toLocaleString() : 0);
-            document.getElementById('monthly-payment').innerText = monthly > 0 ? 'RM ' + monthly.toFixed(2) : 'RM 0.00';
+            // 计算金额
+            const dpAmount = (price * (percent / 100)).toFixed(0);
+            
+            document.getElementById('downpayment').value = dpAmount;
+            document.getElementById('percent-display').innerText = percent + '%';
         }
 
-        // WhatsApp 报价复制
-        function copyQuote() {
-            const price = document.getElementById('car-price').value || "0";
-            const monthly = document.getElementById('monthly-payment').innerText;
-            const years = document.getElementById('loan-years').value;
-            const dp = document.getElementById('dp-cash').value || "0";
+        // 情况 B: 当用户手动输入头期 RM -> 自动算百分比并移动拉条
+        function syncFromRM() {
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const dpAmount = parseFloat(document.getElementById('downpayment').value) || 0;
             
-            const text = `🚗 *Car Quotation - Manthong Group* \n\n` +
-                         `Car Price: RM ${parseFloat(price).toLocaleString()}\n` +
-                         `Down Payment: RM ${parseFloat(dp).toLocaleString()}\n` +
-                         `Loan Period: ${years} Years\n` +
-                         `*Monthly Installment: ${monthly}*\n\n` +
-                         `Contact us for full details!`;
-            
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Success! Quote copied for WhatsApp.');
-            });
+            if (price > 0) {
+                const percent = Math.round((dpAmount / price) * 100);
+                // 限制在 0-100 之间
+                const limitedPercent = Math.min(Math.max(percent, 0), 100);
+                
+                document.getElementById('percent-range').value = limitedPercent;
+                document.getElementById('percent-display').innerText = limitedPercent + '%';
+            }
+        }
+
+        // 最终计算月供（你的原始逻辑）
+        function calculate() {
+            const p = parseFloat(document.getElementById('price').value);
+            const d = parseFloat(document.getElementById('downpayment').value) || 0;
+            const r = parseFloat(document.getElementById('interest').value) / 100;
+            const y = parseInt(document.getElementById('years').value);
+
+            if(!p) { alert("Please enter car price"); return; }
+
+            const loanAmount = p - d;
+            const totalInterest = loanAmount * r * y;
+            const monthly = (loanAmount + totalInterest) / (y * 12);
+
+            document.getElementById('monthly').innerText = 'RM ' + monthly.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            document.getElementById('result').classList.remove('d-none');
         }
     </script>
 </body>
