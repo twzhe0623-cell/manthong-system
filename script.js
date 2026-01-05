@@ -1,111 +1,131 @@
-// 1. 云端同步配置
-const CLOUD_CONFIG = {
-    TOKEN: localStorage.getItem('MY_GH_TOKEN') || '', 
-    OWNER: 'twzhe0623-cell',
-    REPO: 'manthong-system',
-    FILE: 'data.json'
-};
+// ==========================================
+// Manthong Core Logic v8.0 - Full Data Edition
+// ==========================================
 
-const CONFIG = {
-    STORAGE_KEYS: {
-        CARS: 'car_dealership_inventory_v2',
-        RECYCLE: 'car_dealership_recycle_bin_v2',
-        ADMIN_SESSION: 'admin_session_data'
-    },
-    ADMIN: { USER: 'admin', PASS: '7887', DURATION: 2 * 60 * 60 * 1000 }
-};
+const INITIAL_CARS = [
+    { 
+        id: 1, brand: "Proton", model: "X70", year: "2020", spec: "Premium", 
+        colour: "White", plate: "VBA 1234", price: 85000, processing_fee: 2500, 
+        branch: "Manthong", status: "Ready", image: "https://via.placeholder.com/400x250" 
+    }
+];
 
-const dataManager = {
-    async fetchCloudData() {
-        const url = `https://api.github.com/repos/${CLOUD_CONFIG.OWNER}/${CLOUD_CONFIG.REPO}/contents/${CLOUD_CONFIG.FILE}`;
-        try {
-            const resp = await fetch(url, { headers: { 'Authorization': `token ${CLOUD_CONFIG.TOKEN}` } });
-            if (!resp.ok) return [];
-            const data = await resp.json();
-            const cars = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-            localStorage.setItem(CONFIG.STORAGE_KEYS.CARS, JSON.stringify(cars));
+document.addEventListener('DOMContentLoaded', () => {
+    // 初始化数据
+    if (!localStorage.getItem('cars')) {
+        localStorage.setItem('cars', JSON.stringify(INITIAL_CARS));
+    }
 
-            // --- 自动分行过滤逻辑 ---
-            const path = window.location.pathname.toLowerCase();
-            let branch = 'all';
-            if (path.includes('manthong')) branch = 'manthong';
-            else if (path.includes('everforward')) branch = 'everforward';
-            else if (path.includes('tscar')) branch = 'tscar';
+    const pageType = document.body.getAttribute('data-page');
+    const branchType = document.body.getAttribute('data-branch');
 
-            if (document.getElementById('inventory-list')) {
-                this.renderInventory('inventory-list', branch);
-            }
-            if (document.getElementById('admin-inventory-list')) {
-                this.renderInventory('admin-inventory-list', 'all');
-            }
-            return cars;
-        } catch (e) { 
-            console.error("Sync Error:", e);
-            return this.getCars();
-        }
-    },
+    if (pageType === 'inventory-view') {
+        renderUserInventory(branchType);
+    } else if (pageType === 'admin-manage') {
+        renderAdminInventory();
+    }
+});
 
-    async pushToCloud(cars) {
-        const url = `https://api.github.com/repos/${CLOUD_CONFIG.OWNER}/${CLOUD_CONFIG.REPO}/contents/${CLOUD_CONFIG.FILE}`;
-        try {
-            const getFile = await fetch(url, { headers: { 'Authorization': `token ${CLOUD_CONFIG.TOKEN}` } });
-            let sha = getFile.ok ? (await getFile.json()).sha : "";
-            const content = btoa(unescape(encodeURIComponent(JSON.stringify(cars, null, 2))));
-            await fetch(url, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${CLOUD_CONFIG.TOKEN}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Update", content: content, sha: sha })
-            });
-        } catch (e) { console.error("Push failed:", e); }
-    },
+// [展示层] 渲染给客户看的分行页面
+function renderUserInventory(branch) {
+    const cars = JSON.parse(localStorage.getItem('cars')) || [];
+    const container = document.getElementById('car-list');
+    const filtered = cars.filter(c => c.branch === branch);
 
-    getCars() { return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.CARS)) || []; },
-    saveCars(cars) { localStorage.setItem(CONFIG.STORAGE_KEYS.CARS, JSON.stringify(cars)); this.pushToCloud(cars); },
-    getStatusColor(s) { return { ready: 'success', preparing: 'warning', booked: 'danger' }[s] || 'secondary'; },
-    
-    isAdmin() {
-        const s = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.ADMIN_SESSION));
-        return s && s.isLoggedIn && Date.now() < s.expiryTime;
-    },
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-12 text-center py-5"><h4>No Stock Available.</h4></div>`;
+        return;
+    }
 
-    renderInventory(containerId, branchFilter = 'all', searchQuery = '', statusFilter = 'all') {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        let cars = this.getCars();
-        const isManage = containerId === 'admin-inventory-list';
-
-        if (branchFilter !== 'all') cars = cars.filter(c => c.branch === branchFilter);
-        if (searchQuery) {
-            const q = searchQuery.toLowerCase();
-            cars = cars.filter(c => c.brand.toLowerCase().includes(q) || c.model.toLowerCase().includes(q));
-        }
-        if (statusFilter !== 'all') cars = cars.filter(c => c.status === statusFilter);
-
-        container.innerHTML = cars.map((car, index) => {
-            const otr = parseFloat(car.price || 0) + parseFloat(car.proc_fee || 0);
-            return `
-            <div class="col-md-6 col-xl-4 mb-4">
-                <div class="glass-card h-100 position-relative shadow-sm rounded-4 overflow-hidden" style="background:white; color:black;">
-                    <span class="badge position-absolute top-0 start-0 m-3 bg-${this.getStatusColor(car.status)}">${car.status.toUpperCase()}</span>
-                    <img src="${car.image || ''}" class="card-img-top" style="height:180px; object-fit:cover;">
-                    <div class="card-body p-3">
-                        <h5 class="fw-bold mb-0">${car.brand} ${car.model}</h5>
-                        <p class="text-primary small mb-2">${car.spec || '-'}</p>
-                        <div class="bg-light p-2 rounded mb-2">
-                            <div class="d-flex justify-content-between text-danger fw-bold"><span>OTR:</span><span>RM ${otr.toLocaleString()}</span></div>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <a href="calculator.html?price=${otr}" class="btn btn-primary btn-sm rounded-pill">Calculator</a>
-                            ${isManage ? `<button onclick="editCar(${index})" class="btn btn-outline-dark btn-sm rounded-pill">Edit</button>` : ''}
-                        </div>
-                    </div>
+    container.innerHTML = filtered.map(car => `
+        <div class="col-md-4">
+            <div class="morph-card">
+                <div class="position-relative mb-3">
+                    <img src="${car.image}" class="img-fluid rounded" style="height:200px; width:100%; object-fit:cover;">
+                    <div class="status-badge" style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.7); border:1px solid var(--gold); padding:2px 10px; font-size:0.7rem;">${car.status.toUpperCase()}</div>
+                    <div style="position:absolute; bottom:10px; right:10px; background:#000; color:#fff; padding:2px 8px; font-size:0.8rem; border:1px solid #444;">${car.plate}</div>
                 </div>
-            </div>`;
-        }).join('');
+                <h4 class="mb-1">${car.brand} ${car.model}</h4>
+                <p class="text-muted small">${car.year} | ${car.spec} | ${car.colour}</p>
+                <div class="price-tag h3 fw-900 text-warning">RM ${parseFloat(car.price).toLocaleString()}</div>
+                <div class="small text-muted mb-3">+ RM ${car.processing_fee} (Processing Fee)</div>
+                <a href="calculator.html?price=${car.price}" class="btn-glow w-100 d-block text-center text-decoration-none">LOAN CALCULATOR</a>
+            </div>
+        </div>
+    `).join('');
+}
+
+// [管理层] 渲染后台管理表格
+function renderAdminInventory() {
+    const cars = JSON.parse(localStorage.getItem('cars')) || [];
+    const tbody = document.getElementById('inventory-table');
+    
+    tbody.innerHTML = cars.map(car => `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td class="py-3">
+                <strong>${car.brand} ${car.model}</strong><br>
+                <small class="text-muted">${car.plate} | ${car.year}</small>
+            </td>
+            <td>${car.branch}</td>
+            <td>
+                <select onchange="updateStatus(${car.id}, this.value)" class="form-select form-select-sm bg-dark text-white border-secondary">
+                    <option value="Ready" ${car.status === 'Ready' ? 'selected' : ''}>Ready</option>
+                    <option value="Preparing" ${car.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
+                    <option value="Pending" ${car.status === 'Pending' ? 'selected' : ''}>Pending (还没拿)</option>
+                </select>
+            </td>
+            <td>
+                <button onclick="deleteCar(${car.id})" class="btn btn-sm btn-outline-danger">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// [功能层] 核心操作函数
+window.addNewCar = (event) => {
+    event.preventDefault();
+    const cars = JSON.parse(localStorage.getItem('cars')) || [];
+    const newCar = {
+        id: Date.now(),
+        brand: document.getElementById('brand').value,
+        model: document.getElementById('model').value,
+        year: document.getElementById('year').value,
+        spec: document.getElementById('spec').value,
+        colour: document.getElementById('colour').value,
+        plate: document.getElementById('plate').value,
+        price: parseInt(document.getElementById('price').value),
+        processing_fee: parseInt(document.getElementById('processing_fee').value || 0),
+        branch: document.getElementById('branch').value,
+        status: document.getElementById('status').value,
+        image: document.getElementById('image').value || 'https://via.placeholder.com/400x250'
+    };
+    cars.push(newCar);
+    localStorage.setItem('cars', JSON.stringify(cars));
+    alert('Vehicle Added Successfully!');
+    location.reload();
+};
+
+window.updateStatus = (id, newStatus) => {
+    let cars = JSON.parse(localStorage.getItem('cars'));
+    cars = cars.map(c => c.id === id ? {...c, status: newStatus} : c);
+    localStorage.setItem('cars', JSON.stringify(cars));
+};
+
+window.deleteCar = (id) => {
+    if(confirm('Delete this car?')) {
+        let cars = JSON.parse(localStorage.getItem('cars'));
+        cars = cars.filter(c => c.id !== id);
+        localStorage.setItem('cars', JSON.stringify(cars));
+        renderAdminInventory();
     }
 };
 
-// 自动运行（除首页外）
-if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') {
-    dataManager.fetchCloudData();
-}
+window.exportDatabase = () => {
+    const data = localStorage.getItem('cars');
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Manthong_Fleet_Backup.json`;
+    a.click();
+};
