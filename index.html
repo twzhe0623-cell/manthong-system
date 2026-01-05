@@ -3,172 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manthong Group | Internal System</title>
+    <title>Manthong | Premium Car Fleet</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .hero-section {
-            height: 70vh;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-                        url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            color: white;
-            border-radius: 0 0 50px 50px;
-        }
-        .branch-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            background: rgba(255, 255, 255, 0.9);
-        }
-        .branch-card:hover {
-            transform: scale(1.05);
-            background: #0d6efd !important;
-            color: white !important;
-        }
-        .branch-card:hover .text-muted {
-            color: rgba(255,255,255,0.8) !important;
-        }
-        .stat-card {
-            min-height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-    </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="bg-vibe"></div>
+    <nav class="super-nav">
+        <a href="index.html" class="nav-brand">MANTHONG GROUP</a>
+        <div class="nav-links">
+            <a href="login.html">SYSTEM MANAGEMENT</a>
+            <a href="contact.html">COMMENT</a>
+        </div>
+    </nav>
+
+    <header class="container text-center" style="padding-top: 150px;">
+        <h1 class="display-3 fw-900 mb-3">WE FIND YOUR <span style="color:var(--gold)">DREAM CAR</span></h1>
+        <p class="lead text-muted mb-5">Manthong Group - Professional, Trusted, and Reliable Car Dealer.</p>
+        
+        <div class="row g-4 mt-5">
+            <div class="col-md-4">
+                <div class="morph-card">
+                    <h5><span style="color:var(--gold)">🏢 HQ</span></h5>
+                    <h2>MANTHONG AUTO TRADING</h2>
+                    <p>Main Hub Inventory</p>
+                    <a href="manthong.html" class="btn-glow mt-3">VIEW STOCK</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="morph-card">
+                    <h5><span style="color:var(--gold)">🚀 BRANCH</span></h5>
+                    <h2>Ever Forward Auto Trading</h2>
+                    <p>Performance & Luxury</p>
+                    <a href="everforward.html" class="btn-glow mt-3">VIEW STOCK</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="morph-card">
+                    <h5><span style="color:var(--gold)">💎 BRANCH</span></h5>
+                    <h2>TS Car Sdn. Bhd.</h2>
+                    <p>Quality Used Cars</p>
+                    <a href="tscar.html" class="btn-glow mt-3">VIEW STOCK</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container mt-5 text-center">
+        <a href="calculator.html" class="btn-glow" style="background:#000; color:#fff">CAR LOAN CALCULATOR</a>
+    </div>
+    <footer class="luxury-footer">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="index.html">MANTHONG GROUP</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="manthong.html">ManThong</a></li>
-                <li class="nav-item"><a class="nav-link" href="everforward.html">EverForward</a></li>
-                <li class="nav-item"><a class="nav-link" href="tscar.html">TsCar</a></li>
-                <li class="nav-item ms-lg-2"><a class="btn btn-primary btn-sm text-white" href="admin.html">System Management</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <a href="#" class="footer-logo">MANTHONG GROUP</a>
+                <p class="mt-4 text-muted" style="line-height: 1.8; font-size: 0.9rem;">
+                    Malaysia's premier destination for high-quality automotive excellence. From Manthong HQ to our strategic branches, we define the art of driving.
+                </p>
+                <div class="social-links mt-4">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
 
-<header class="hero-section text-center">
-    <div class="container">
-        <h1 class="display-3 fw-bold mb-3">ManThong Group System</h1>
-        <p class="lead mb-4">Empowering our branches with real-time stock management.</p>
-        <div class="d-flex justify-content-center gap-3">
-            <a href="#branches" class="btn btn-primary btn-lg px-4 rounded-pill">View Branches</a>
-            <a href="calculator.html" class="btn btn-outline-light btn-lg px-4 rounded-pill">Loan Calculator</a>
-        </div>
-    </div>
-</header>
+            <div class="col-6 col-lg-2 offset-lg-1">
+                <h5 class="footer-heading">Branches</h5>
+                <ul class="footer-links">
+                    <li><a href="manthong.html">Manthong Auto Trading</a></li>
+                    <li><a href="everforward.html">Ever Forward Auto Trading</a></li>
+                    <li><a href="tscar.html">TS Car Sdn. Bhd.</a></li>
+                </ul>
+            </div>
 
-<div class="container mt-n5" style="margin-top: -50px;">
-    <div class="row g-3">
-        <div class="col-md-4">
-            <div class="glass-card stat-card p-4 text-center shadow">
-                <h2 class="fw-bold text-primary" id="stat-total">...</h2>
-                <p class="text-muted mb-0">Total Live Stock</p>
+            <div class="col-6 col-lg-2">
+                <h5 class="footer-heading">Quick Menu</h5>
+                <ul class="footer-links">
+                    <li><a href="calculator.html">Car Loan Calculator</a></li>
+                    <li><a href="contact.html">Comment this page</a></li>
+                    <li><a href="login.html">System Management</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3">
+                <h5 class="footer-heading">Connect With Us</h5>
+                <ul class="contact-info">
+                    <li>
+                        <i class="fas fa-phone-alt"></i>
+                        <span>+60 10-761 6875</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>274F Jalan Padang Temusu<br>08000, Sungai Petani Kedah</span>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="glass-card stat-card p-4 text-center shadow">
-                <h2 class="fw-bold text-success" id="stat-available">...</h2>
-                <p class="text-muted mb-0">Units Available</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="glass-card stat-card p-4 text-center shadow">
-                <h2 class="fw-bold text-warning" id="stat-last-update">--</h2>
-                <p class="text-muted mb-0">Latest Update</p>
-            </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2021 - 2026 MANTHONG GROUP. ALL RIGHTS RESERVED.</p>
         </div>
     </div>
-</div>
-
-<main class="container my-5" id="branches">
-    <h3 class="fw-bold mb-4 text-center text-dark">Select Branch</h3>
-    <div class="row g-4 text-center">
-        <div class="col-md-4">
-            <a href="manthong.html" class="text-decoration-none text-dark">
-                <div class="glass-card p-5 branch-card shadow-sm rounded-4">
-                    <i class="bi bi-building display-4 mb-3"></i>
-                    <h4>ManThong Auto</h4>
-                    <p class="small text-muted">Main Headquarters Inventory</p>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-4">
-            <a href="everforward.html" class="text-decoration-none text-dark">
-                <div class="glass-card p-5 branch-card shadow-sm rounded-4">
-                    <i class="bi bi-shop display-4 mb-3"></i>
-                    <h4>EverForward Auto</h4>
-                    <p class="small text-muted">Premium Selected Stock</p>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-4">
-            <a href="tscar.html" class="text-decoration-none text-dark">
-                <div class="glass-card p-5 branch-card shadow-sm rounded-4">
-                    <i class="bi bi-geo-alt display-4 mb-3"></i>
-                    <h4>Ts Car Trading</h4>
-                    <p class="small text-muted">Quality Used Cars</p>
-                </div>
-            </a>
-        </div>
-    </div>
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="script.js"></script>
-<script>
-    /**
-     * 首页初始化逻辑
-     * 1. 调用 script.js 里的数据下载功能
-     * 2. 计算总库存并显示
-     */
-    async function initDashboard() {
-        // 确保 script.js 已加载且 dataManager 可用
-        if (typeof dataManager !== 'undefined') {
-            try {
-                // 1. 从云端获取最新数据
-                const cars = await dataManager.fetchCloudData();
-                
-                // 2. 检查是否有数据
-                if (cars && Array.isArray(cars)) {
-                    // 更新总数
-                    document.getElementById('stat-total').innerText = cars.length;
-                    
-                    // 过滤可用状态 (ready 或 available)
-                    const availableCount = cars.filter(c => 
-                        c.status === 'ready' || c.status === 'available'
-                    ).length;
-                    document.getElementById('stat-available').innerText = availableCount;
-                    
-                    // 设置最后更新日期
-                    document.getElementById('stat-last-update').innerText = new Date().toLocaleDateString('en-MY');
-                } else {
-                    // 如果没拿到数据，显示 0
-                    document.getElementById('stat-total').innerText = "0";
-                    document.getElementById('stat-available').innerText = "0";
-                }
-            } catch (err) {
-                console.error("Dashboard init failed:", err);
-            }
-        }
-    }
-
-    // 执行初始化
-    initDashboard();
-</script>
-
+</footer>
 </body>
 </html>
